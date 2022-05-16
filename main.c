@@ -2,49 +2,66 @@
 # include <stdlib.h>
 # include <time.h>
 
+//void addBomb(int** board);
 
-void setupBoard(int* board, int bombNmb){
-	
-	
-	
+/*int askSize(){
+  int size = -1;
+  while(size < 0 || size >50){
+    scanf("%d",&size);
+  }
+}
+*/
+
+
+void addBomb(int** tab, int size) {
+  int count,a,b;
+  count=0;
+  while (count<11) {
+      a=rand()%size;
+      b=rand()%size;
+      if(tab[a][b] != -9){
+        tab[a][b]=-9;
+        count=count+1;
+      }
+    }
 }
 
-void printBoard(int* board, int size){
-	for(int i = 0; i<size + 2; i++){
-		if(i == 0){
-			printf("    ");
-			for(int k = 0; k < size ; k++){
-				printf(" %c ", 65+k);
-			}
-			printf("\n");
-		}
-		else if(i == 1){
-			printf("   ");
-			for(int k = 0; k < size ; k++){
-				printf("---");
-			}
-			printf("\n");
-		}
-		else{
-			printf("%d", i-1);
-			if(i-1 != 10){
-				printf(" | ");
-			}
-			else{
-				printf("| ");
-			}
-			for(int j = 0; j<size; j++){
-				printf(" %d ", board[i-2][j]);
-			}
-			printf("\n");
-		}
-	}
+
+int** setupBoard(int choice){ //Setop game board with size and bombs
+  int size = 10;
+  int** board = malloc(size * sizeof(int*));//board creation
+  for(int i = 0; i<size; i++){
+    board[i] = malloc(size * sizeof(int));
+  }
+   for(int i = 0; i<size; i++){
+     for(int j = 0; j<size; j++){
+        board[i][j] = 0;
+      }
+    }
+	addBomb(board, size);
+  
+	return board;
 }
 
-int main(){
-	int board* = {};
-	
-	setupBoard();
-	printBoard(board, 10);
+
+
+void printBoard(int size, int** tab) {
+    for(int i=0;i<size;i++) {
+        for(int j=0;j<size;j++) {
+          if(tab[i][j] < 0){
+            printf("~ ");
+          }
+          else{
+            printf("%d ", tab[i][j]);
+          }
+        }
+      printf("\n");
+    }
+}
+
+int main(){	
+  srand(time(NULL));
+	int** board = setupBoard(1);
+	printBoard(10, board);
 	return 0;
 }
