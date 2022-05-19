@@ -4,6 +4,46 @@
 
 //void addBomb(int** board);
 
+void reveal(int** board, int size, int i, int j){
+  if(i < 0 || i >size-1 || j<0 || j>size-1){
+  }
+  else if(board[i][j] > 0){
+  }
+  else if(board[i][j] != -1){
+    board[i][j] = board[i][j]*(-1);
+  }
+  else if(board[i][j] == -1){
+    board[i][j] = board[i][j]*(-1);
+    if(i != 0){ //UP
+        reveal(board, size, i-1,j);
+      }
+      if(i != size-1){ //DOWN
+        reveal(board, size, i+1,j); 
+      }
+      if(j != 0){ //LEFT
+        reveal(board, size, i,j-1);
+        
+      }
+      if(j != size-1){//Right
+       reveal(board, size, i,j+1);
+      }
+      if(j != size-1 && i != 0){ //RIGHT UP
+        reveal(board, size, i-1,j+1);
+      }
+      if(j != size-1 && i != size-1){//RIGHT DOWN
+        reveal(board, size, i+1,j+1);
+      }
+      if(j != 0 && i != 0){//LEFT UP
+       reveal(board, size, i-1,j-1);
+      }
+      if(j != 0 && i != size-1){
+        reveal(board, size, i+1,j-1);
+      }
+  }
+}
+
+
+
 int askSize(){
   int size = -1;
   while(size < 0 || size >50){
@@ -12,7 +52,7 @@ int askSize(){
 }
 
 int isBomb(int** board, int i,int j){
-  if(board[i][j] == -9){
+  if(board[i][j] == -10){
     return 1;
   }
   else{
@@ -59,13 +99,12 @@ void addBomb(int** board, int size, int bomb) {
   while (count<bomb) {
       a=rand()%size;
       b=rand()%size;
-      if(board[a][b] != -9){
-        board[a][b]=-9;
+      if(board[a][b] != -10){
+        board[a][b]=-10;
         count=count+1;
       }
     }
 }
-
 
 int** setupBoard(int size){ //Setop game board with size and bombs
   int** board = malloc(size * sizeof(int*));//board creation
@@ -74,13 +113,11 @@ int** setupBoard(int size){ //Setop game board with size and bombs
   }
    for(int i = 0; i<size; i++){
      for(int j = 0; j<size; j++){
-        board[i][j] = 0;
+        board[i][j] = -1;
       }
     }  
 	return board;
 }
-
-
 
 void printBoard(int size, int** tab) {
     for(int i=0;i<size;i++) {
@@ -88,8 +125,11 @@ void printBoard(int size, int** tab) {
           if(tab[i][j] < 0){
             printf("~ ");
           }
+          else if(tab[i][j] == 10){
+            printf("* ");
+          }
           else{
-            printf("%d ", tab[i][j]);
+            printf("%d ", tab[i][j]-1);
           }
         }
       printf("\n");
@@ -112,9 +152,10 @@ int main(){
   if(choice == 3){
     //TODO free choice with bomb capped at 25 %
   }
-	int** board = setupBoard(size);
-  addBomb(board, size, bomb); //add Bomb to the grid
-  checkBomb(board, size);
+	int** board = setupBoard(size); //setup of the board
+  addBomb(board, size, bomb); //add Bomb to the board
+  checkBomb(board, size); //add the numbers of bombs around
+  reveal(board, size, 5, 5);
 	printBoard(size, board);
 	return 0;
 }
