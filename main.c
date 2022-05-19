@@ -4,31 +4,70 @@
 
 //void addBomb(int** board);
 
-/*int askSize(){
+int askSize(){
   int size = -1;
   while(size < 0 || size >50){
     scanf("%d",&size);
   }
 }
-*/
+
+int isBomb(int** board, int i,int j){
+  if(board[i][j] == -9){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
 
 
-void addBomb(int** tab, int size) {
+void checkBomb(int** board, int size){
+  for(int i = 0; i<size; i++){
+    for(int j = 0; j<size; j++){
+      if(i != 0){ //UP
+        board[i][j] -= isBomb(board, i-1,j);
+      }
+      if(i != size-1){ //DOWN
+        board[i][j] -= isBomb(board, i+1,j); 
+      }
+      if(j != 0){ //LEFT
+        board[i][j] -= isBomb(board, i,j-1);
+        
+      }
+      if(j != size-1){//Right
+        board[i][j] -= isBomb(board, i,j+1);
+      }
+      if(j != size-1 && i != 0){ //RIGHT UP
+        board[i][j] -= isBomb(board, i-1,j+1);
+      }
+      if(j != size-1 && i != size-1){//RIGHT DOWN
+        board[i][j] -= isBomb(board, i+1,j+1);
+      }
+      if(j != 0 && i != 0){//LEFT UP
+        board[i][j] -= isBomb(board, i-1,j-1);
+      }
+      if(j != 0 && i != size-1){
+        board[i][j] -= isBomb(board, i+1,j-1);
+      }
+    }
+  }
+}
+
+void addBomb(int** board, int size, int bomb) {
   int count,a,b;
   count=0;
-  while (count<11) {
+  while (count<bomb) {
       a=rand()%size;
       b=rand()%size;
-      if(tab[a][b] != -9){
-        tab[a][b]=-9;
+      if(board[a][b] != -9){
+        board[a][b]=-9;
         count=count+1;
       }
     }
 }
 
 
-int** setupBoard(int choice){ //Setop game board with size and bombs
-  int size = 10;
+int** setupBoard(int size){ //Setop game board with size and bombs
   int** board = malloc(size * sizeof(int*));//board creation
   for(int i = 0; i<size; i++){
     board[i] = malloc(size * sizeof(int));
@@ -37,9 +76,7 @@ int** setupBoard(int choice){ //Setop game board with size and bombs
      for(int j = 0; j<size; j++){
         board[i][j] = 0;
       }
-    }
-	addBomb(board, size);
-  
+    }  
 	return board;
 }
 
@@ -60,8 +97,24 @@ void printBoard(int size, int** tab) {
 }
 
 int main(){	
+  int choice, size, bomb;
   srand(time(NULL));
-	int** board = setupBoard(1);
-	printBoard(10, board);
+  printf("Choisir la taille de la taille du plateau de jeu : \n 1.Normal \n2.Expert \n3.Custom\n");
+  scanf("%d", &choice);
+  if(choice == 1){
+    size = 9;
+    bomb =10;
+  }
+  if(choice == 2){
+    size = 16;
+    bomb =40;
+  }
+  if(choice == 3){
+    //TODO free choice with bomb capped at 25 %
+  }
+	int** board = setupBoard(size);
+  addBomb(board, size, bomb); //add Bomb to the grid
+  checkBomb(board, size);
+	printBoard(size, board);
 	return 0;
 }
