@@ -64,30 +64,31 @@ int isBomb(int** board, int i,int j){
 void checkBomb(int** board, int size){
   for(int i = 0; i<size; i++){
     for(int j = 0; j<size; j++){
-      if(i != 0){ //UP
-        board[i][j] -= isBomb(board, i-1,j);
-      }
-      if(i != size-1){ //DOWN
-        board[i][j] -= isBomb(board, i+1,j); 
-      }
-      if(j != 0){ //LEFT
-        board[i][j] -= isBomb(board, i,j-1);
-        
-      }
-      if(j != size-1){//Right
-        board[i][j] -= isBomb(board, i,j+1);
-      }
-      if(j != size-1 && i != 0){ //RIGHT UP
-        board[i][j] -= isBomb(board, i-1,j+1);
-      }
-      if(j != size-1 && i != size-1){//RIGHT DOWN
-        board[i][j] -= isBomb(board, i+1,j+1);
-      }
-      if(j != 0 && i != 0){//LEFT UP
-        board[i][j] -= isBomb(board, i-1,j-1);
-      }
-      if(j != 0 && i != size-1){
-        board[i][j] -= isBomb(board, i+1,j-1);
+      if(board[i][j] != -10){
+        if(i != 0){ //UP
+          board[i][j] -= isBomb(board, i-1,j);
+        }
+        if(i != size-1){ //DOWN
+          board[i][j] -= isBomb(board, i+1,j); 
+        }
+        if(j != 0){ //LEFT
+          board[i][j] -= isBomb(board, i,j-1);
+        }
+        if(j != size-1){//Right
+          board[i][j] -= isBomb(board, i,j+1);
+        }
+        if(j != size-1 && i != 0){ //RIGHT UP
+          board[i][j] -= isBomb(board, i-1,j+1);
+        }
+        if(j != size-1 && i != size-1){//RIGHT DOWN
+          board[i][j] -= isBomb(board, i+1,j+1);
+        }
+        if(j != 0 && i != 0){//LEFT UP
+          board[i][j] -= isBomb(board, i-1,j-1);
+        }
+        if(j != 0 && i != size-1){
+          board[i][j] -= isBomb(board, i+1,j-1);
+        }
       }
     }
   }
@@ -137,7 +138,7 @@ void printBoard(int size, int** tab) {
 }
 
 int main(){	
-  int choice, size, bomb;
+  int choice, size, bomb, i, j;
   srand(time(NULL));
   printf("Choisir la taille de la taille du plateau de jeu : \n 1.Normal \n2.Expert \n3.Custom\n");
   scanf("%d", &choice);
@@ -155,7 +156,12 @@ int main(){
 	int** board = setupBoard(size); //setup of the board
   addBomb(board, size, bomb); //add Bomb to the board
   checkBomb(board, size); //add the numbers of bombs around
-  reveal(board, size, 5, 5);
-	printBoard(size, board);
+  while(1==1){
+    printf("ecrit les co");
+    scanf("%d %d",&i, &j);
+    printf("\e[1;1H\e[2J");
+    reveal(board, size, i, j);
+    printBoard(size, board);
+  }
 	return 0;
 }

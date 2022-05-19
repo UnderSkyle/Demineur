@@ -1,2 +1,2 @@
 language = "bash"
-run = "./main"
+run = "gcc -o main main.c && ./main"
