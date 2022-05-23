@@ -36,7 +36,7 @@ void reveal(int** board, int size, int i, int j){
       if(j != 0 && i != 0){//LEFT UP
        reveal(board, size, i-1,j-1);
       }
-      if(j != 0 && i != size-1){
+      if(j != 0 && i != size-1){// LEFT DOWN
         reveal(board, size, i+1,j-1);
       }
   }
@@ -60,6 +60,28 @@ int isBomb(int** board, int i,int j){
   }
 }
 
+int endGame(int** board, int size){
+  int end = 0;
+  for(int i = 0; i<size; i++){
+    for(int j = 0; j<size; j++){
+      if(board[i][j] == 10){//if BOMB end
+        end = 1;
+      }
+    }
+  }
+  return 0;
+}
+
+void getCo(int* i, int* j){
+  char k;
+  int l;
+  printf("Ecrire le coordonées Ex: A 5 \n");
+  scanf("%c", &k);
+  scanf("%d", &l);
+  *i = (int)k-'A';
+  *j = l-1;
+  printf("%d, %d",*i, *j);
+}
 
 void checkBomb(int** board, int size){
   for(int i = 0; i<size; i++){
@@ -86,7 +108,7 @@ void checkBomb(int** board, int size){
         if(j != 0 && i != 0){//LEFT UP
           board[i][j] -= isBomb(board, i-1,j-1);
         }
-        if(j != 0 && i != size-1){
+        if(j != 0 && i != size-1){//RIGHT UP
           board[i][j] -= isBomb(board, i+1,j-1);
         }
       }
@@ -121,7 +143,20 @@ int** setupBoard(int size){ //Setop game board with size and bombs
 }
 
 void printBoard(int size, int** tab) {
-    for(int i=0;i<size;i++) {
+    char up = 'A';
+    int column = 1;
+    printf("   ");
+    for(int k = 0; k<size; k++){ // print the char for the x coordinate
+      printf("%c ", up);
+      up++;
+    }
+    printf("\n");
+    for(int i=0;i<size;i++) { 
+        printf("%d ",column); // handle the y coordinate
+        if(column < 10){
+          printf(" ");
+        }
+        column++;
         for(int j=0;j<size;j++) {
           if(tab[i][j] < 0){
             printf("~ ");
@@ -138,7 +173,9 @@ void printBoard(int size, int** tab) {
 }
 
 int main(){	
-  int choice, size, bomb, i, j;
+  int choice, size, bomb, end;
+  int i =0;
+  int j =0;
   srand(time(NULL));
   printf("Choisir la taille de la taille du plateau de jeu : \n 1.Normal \n2.Expert \n3.Custom\n");
   scanf("%d", &choice);
@@ -156,12 +193,14 @@ int main(){
 	int** board = setupBoard(size); //setup of the board
   addBomb(board, size, bomb); //add Bomb to the board
   checkBomb(board, size); //add the numbers of bombs around
-  while(1==1){
-    printf("ecrit les co");
-    scanf("%d %d",&i, &j);
+  getCo(&i, &j);
+  while(end==0){
+    getCo(&i, &j);
     printf("\e[1;1H\e[2J");
     reveal(board, size, i, j);
     printBoard(size, board);
+    end = endGame(board, size)
   }
 	return 0;
 }
+reveal
