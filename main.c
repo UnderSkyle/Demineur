@@ -174,6 +174,7 @@ void printBoard(int size, int** tab) {
 
 int main(){	
   int choice, size, bomb, end;
+  end = 0;
   int i =0;
   int j =0;
   srand(time(NULL));
@@ -197,10 +198,9 @@ int main(){
   while(end==0){
     getCo(&i, &j);
     printf("\e[1;1H\e[2J");
-    reveal(board, size, i, j);
+    reveal(board, size, j, i);
     printBoard(size, board);
-    end = endGame(board, size)
+    end = endGame(board, size);
   }
 	return 0;
 }
-reveal
