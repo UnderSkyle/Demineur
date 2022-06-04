@@ -3,6 +3,16 @@
 # include <time.h>
 
 //void addBomb(int** board);
+void emptyBuff(){
+    int c = 0;
+    while (c != '\n' && c != EOF)
+    {
+        c = getchar();
+    }
+}
+
+
+
 
 void reveal(int** board, int size, int i, int j){
   if(i < 0 || i >size-1 || j<0 || j>size-1){
@@ -46,8 +56,19 @@ void reveal(int** board, int size, int i, int j){
 
 int askSize(){
   int size = -1;
-  while(size < 0 || size >50){
+  printf("choisissez une taille entre 3 et 50\n");
+  while(size < 3 || size >50){
     scanf("%d",&size);
+    emptyBuff();
+  }
+}
+
+int askBomb(int size){
+  int bomb = -1;
+  printf("choisissez une taille entre 1 et %d\n", (size*size)/4);
+  while(bomb < 1 || bomb >(size*size)/4){
+    scanf("%d",&bomb);
+    emptyBuff();
   }
 }
 
@@ -72,18 +93,20 @@ int endGame(int** board, int size){
   return 0;
 }
 
-void getCo(int* i, int* j){
+void getCo(int* i, int* j, int size){
   char k;
   int l;
   printf("Ecrire le coordonées Ex: A 5 \n");
+  do{
+  emptyBuff();
   scanf("%c", &k);
   scanf("%d", &l);
+  }while(k<'A' || k > 'A'+size || l<1 || l>size);
   *i = (int)k-'A';
   *j = l-1;
-  printf("%d, %d",*i, *j);
 }
 
-void checkBomb(int** board, int size){
+void checkBomb(int** board, int size){ //used to set the board to correct value 
   for(int i = 0; i<size; i++){
     for(int j = 0; j<size; j++){
       if(board[i][j] != -10){
@@ -116,7 +139,7 @@ void checkBomb(int** board, int size){
   }
 }
 
-void addBomb(int** board, int size, int bomb) {
+void addBomb(int** board, int size, int bomb) {//add the good number of bomb in the board
   int count,a,b;
   count=0;
   while (count<bomb) {
@@ -158,10 +181,13 @@ void printBoard(int size, int** tab) {
         }
         column++;
         for(int j=0;j<size;j++) {
-          if(tab[i][j] < 0){
+          if(tab[i][j] < 0){ //Si tab< 0 alors cache
             printf("~ ");
           }
-          else if(tab[i][j] == 10){
+          else if(tab[i][j] == 0){ // drapeau
+            printf("+ ");
+          }
+          else if(tab[i][j] == 10){ // bomb
             printf("* ");
           }
           else{
@@ -173,13 +199,21 @@ void printBoard(int size, int** tab) {
 }
 
 int main(){	
-  int choice, size, bomb, end;
+  int size, bomb, end;
+  int choice = 0;
+  char username[100]={};
   end = 0;
   int i =0;
   int j =0;
   srand(time(NULL));
+  printf("Ecriver votre pseudo \n");
+  scanf("%s",username);
+  emptyBuff();
   printf("Choisir la taille de la taille du plateau de jeu : \n 1.Normal \n2.Expert \n3.Custom\n");
-  scanf("%d", &choice);
+  while(choice < 1 || choice >3){
+    scanf("%d", &choice);
+    emptyBuff();
+  }
   if(choice == 1){
     size = 9;
     bomb =10;
@@ -189,14 +223,15 @@ int main(){
     bomb =40;
   }
   if(choice == 3){
-    //TODO free choice with bomb capped at 25 %
+    size = askSize();
+    bomb = askBomb(size);
   }
 	int** board = setupBoard(size); //setup of the board
   addBomb(board, size, bomb); //add Bomb to the board
   checkBomb(board, size); //add the numbers of bombs around
-  getCo(&i, &j);
+  printBoard(size, board);
   while(end==0){
-    getCo(&i, &j);
+    getCo(&i, &j, size);
     printf("\e[1;1H\e[2J");
     reveal(board, size, j, i);
     printBoard(size, board);
