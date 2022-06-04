@@ -11,8 +11,16 @@ void emptyBuff(){
     }
 }
 
-
-
+void placeFlag(int** board, int size, int i, int j){
+  if(i < 0 || i >size-1 || j<0 || j>size-1){
+  }
+  else if(board[i][j] < -100){
+    board[i][j] = board[i][j]+100;
+  }
+  else if(board[i][j] < 0){
+    board[i][j] = board[i][j]-100;
+  }
+}
 
 void reveal(int** board, int size, int i, int j){
   if(i < 0 || i >size-1 || j<0 || j>size-1){
@@ -81,16 +89,23 @@ int isBomb(int** board, int i,int j){
   }
 }
 
-int endGame(int** board, int size){
+int endGame(int** board, int size, int bomb){
   int end = 0;
+  int test = 0;
   for(int i = 0; i<size; i++){
     for(int j = 0; j<size; j++){
       if(board[i][j] == 10){//if BOMB end
         end = 1;
       }
+      if(board[i][j] < 0 && board[i][j] != -10 && board[i][j] != -110){ //If board all revealed eccept bombe and flaged bombe
+        test++;
+      }
     }
   }
-  return 0;
+  if(test == 0){
+    end = 2;
+  }
+  return end;
 }
 
 void getCo(int* i, int* j, int size){
@@ -98,9 +113,9 @@ void getCo(int* i, int* j, int size){
   int l;
   printf("Ecrire le coordonées Ex: A 5 \n");
   do{
-  emptyBuff();
   scanf("%c", &k);
   scanf("%d", &l);
+  emptyBuff();
   }while(k<'A' || k > 'A'+size || l<1 || l>size);
   *i = (int)k-'A';
   *j = l-1;
@@ -181,11 +196,11 @@ void printBoard(int size, int** tab) {
         }
         column++;
         for(int j=0;j<size;j++) {
-          if(tab[i][j] < 0){ //Si tab< 0 alors cache
-            printf("~ ");
-          }
-          else if(tab[i][j] == 0){ // drapeau
+          if(tab[i][j] < -100){ // drapeau
             printf("+ ");
+            }
+          else if(tab[i][j] < 0){ //Si tab< 0 alors cache
+            printf("~ ");
           }
           else if(tab[i][j] == 10){ // bomb
             printf("* ");
@@ -205,6 +220,7 @@ int main(){
   end = 0;
   int i =0;
   int j =0;
+  int doReveal = -1;
   srand(time(NULL));
   printf("Ecriver votre pseudo \n");
   scanf("%s",username);
@@ -231,11 +247,28 @@ int main(){
   checkBomb(board, size); //add the numbers of bombs around
   printBoard(size, board);
   while(end==0){
+    printf("1. Révélé une case\n2. Placer/enlever un marqueur \n");
+    while(doReveal < 1 || doReveal > 2){
+      scanf("%d", &doReveal);
+      emptyBuff();
+    }
     getCo(&i, &j, size);
     printf("\e[1;1H\e[2J");
-    reveal(board, size, j, i);
+    if(doReveal == 1){
+      reveal(board, size, j, i);
+    }
+    else{
+      placeFlag(board, size,j, i);
+    }
+    doReveal = 0;
     printBoard(size, board);
-    end = endGame(board, size);
+    end = endGame(board, size, bomb);
+  }
+  if(end == 1){
+    printf("Vous avez perdu %s\n", username);
+  }
+  else{
+    printf("Bravo vous avez gagné");
   }
 	return 0;
 }
