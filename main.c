@@ -2,20 +2,19 @@
 
 int main(){
   FILE* file;
-  int size, bomb, end, s, m, ms;
+  int size, bomb, end;
   int timer;
   int choice = 0;
   char username[100]={};
   end = 0;
   int i =0;
   int j =0;
-  int k =0;
   int doReveal = -1;
   srand(time(NULL));
-  printf("Ecriver votre pseudo \n");
+  printf("Ecrivez votre pseudo \n");
   scanf("%s",username);
   emptyBuff();
-  printf("Choisir la taille de la taille du plateau de jeu : \n 1.Normal \n2.Expert \n3.Custom\n");
+  printf("Choisir la taille du plateau de jeu : \n1.Normal \n2.Expert \n3.Custom\n");
   while(choice < 1 || choice >3){
     scanf("%d", &choice);
     emptyBuff();
@@ -63,7 +62,7 @@ int main(){
     }
     doReveal = 0;
     printBoard(size, board);
-    end = endGame(board, size, bomb);
+    end = endGame(board, size);
   }
   if(end == 1){
     printf("Vous avez perdu %s\n", username);

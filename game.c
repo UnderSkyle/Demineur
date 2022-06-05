@@ -5,7 +5,6 @@ void updateScoreboard(FILE* file, int timer, char username[], char filename[]){
   FILE * filetemp = fopen("temp.txt", "w+");
   char currentUser[200];
   int already = 0;
-  int lineback = 0;
   int currentValue = 0;
   for(int i=0; i<5; i++){
     fscanf(file, "%s", currentUser);
@@ -96,6 +95,7 @@ int askSize(){ //ask a board size
     scanf("%d",&size);
     emptyBuff();
   }
+  return size;
 }
 
 int askBomb(int size){ //ask the nomber of bombs (capped 25%)
@@ -105,6 +105,7 @@ int askBomb(int size){ //ask the nomber of bombs (capped 25%)
     scanf("%d",&bomb);
     emptyBuff();
   }
+  return bomb;
 }
 
 int isBomb(int** board, int i,int j){ //Is the space a bomb
@@ -116,7 +117,7 @@ int isBomb(int** board, int i,int j){ //Is the space a bomb
   }
 }
 
-int endGame(int** board, int size, int bomb){ //deal with the end of the game
+int endGame(int** board, int size){ //deal with the end of the game
   int end = 0;
   int test = 0;
   for(int i = 0; i<size; i++){

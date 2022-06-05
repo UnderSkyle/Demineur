@@ -1,7 +1,7 @@
 Simon
-1000
+10000
 Robin
-1000
+10000
 AlanTuring
 10000
 https://youtu.be/dQw4w9WgXcQ

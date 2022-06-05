@@ -12,7 +12,7 @@ void reveal(int** board, int size, int i, int j);
 int askSize();
 int askBomb(int size);
 int isBomb(int** board, int i,int j);
-int endGame(int** board, int size, int bomb);
+int endGame(int** board, int size);
 void printTime(unsigned long timer, int* ms, int* s, int*m);
 void getCo(int* i, int* j, int size);
 void checkBomb(int** board, int size);
