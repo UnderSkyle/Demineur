@@ -1,9 +1,17 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <time.h>
-
+# include <sys/time.h> // a inclure !
 //void addBomb(int** board);
-void emptyBuff(){
+
+void updateScoreboard(FILE* file, int timer, char username[]){
+  
+  
+}
+
+
+
+void emptyBuff(){ // empty the buffer for scanf
     int c = 0;
     while (c != '\n' && c != EOF)
     {
@@ -11,7 +19,13 @@ void emptyBuff(){
     }
 }
 
-void placeFlag(int** board, int size, int i, int j){
+unsigned long getTimeSec(){ //get the current time for the timer
+  struct timeval tv;
+  gettimeofday(&tv,NULL);
+  return tv.tv_sec;
+}
+
+void placeFlag(int** board, int size, int i, int j){ // used to place flags on the board and remove them
   if(i < 0 || i >size-1 || j<0 || j>size-1){
   }
   else if(board[i][j] < -100){
@@ -22,7 +36,7 @@ void placeFlag(int** board, int size, int i, int j){
   }
 }
 
-void reveal(int** board, int size, int i, int j){
+void reveal(int** board, int size, int i, int j){ // reveal a space with recursion
   if(i < 0 || i >size-1 || j<0 || j>size-1){
   }
   else if(board[i][j] > 0){
@@ -60,9 +74,7 @@ void reveal(int** board, int size, int i, int j){
   }
 }
 
-
-
-int askSize(){
+int askSize(){ //ask a board size
   int size = -1;
   printf("choisissez une taille entre 3 et 50\n");
   while(size < 3 || size >50){
@@ -71,7 +83,7 @@ int askSize(){
   }
 }
 
-int askBomb(int size){
+int askBomb(int size){ //ask the nomber of bombs (capped 25%)
   int bomb = -1;
   printf("choisissez une taille entre 1 et %d\n", (size*size)/4);
   while(bomb < 1 || bomb >(size*size)/4){
@@ -80,7 +92,7 @@ int askBomb(int size){
   }
 }
 
-int isBomb(int** board, int i,int j){
+int isBomb(int** board, int i,int j){ //Is the space a bomb
   if(board[i][j] == -10){
     return 1;
   }
@@ -89,7 +101,7 @@ int isBomb(int** board, int i,int j){
   }
 }
 
-int endGame(int** board, int size, int bomb){
+int endGame(int** board, int size, int bomb){ //deal with the end of the game
   int end = 0;
   int test = 0;
   for(int i = 0; i<size; i++){
@@ -108,7 +120,16 @@ int endGame(int** board, int size, int bomb){
   return end;
 }
 
-void getCo(int* i, int* j, int size){
+void printTime(unsigned long timer, int* ms, int* s, int*m){
+   printf("%ld \n", timer);
+   *ms = timer%1000;
+   *s = timer/1000;
+   *m = *s/60;
+   *s = *s%60;
+  printf("Vous avez fini la partie en %d m  %d s  %d ms",*m ,*s ,*ms);
+}
+
+void getCo(int* i, int* j, int size){ //get a the co with letters and numbers
   char k;
   int l;
   printf("Ecrire le coordonées Ex: A 5 \n");
@@ -213,8 +234,10 @@ void printBoard(int size, int** tab) {
     }
 }
 
-int main(){	
-  int size, bomb, end;
+int main(){
+  FILE* file = NULL;
+  int size, bomb, end, s, m, ms;
+  int timer;
   int choice = 0;
   char username[100]={};
   end = 0;
@@ -233,10 +256,20 @@ int main(){
   if(choice == 1){
     size = 9;
     bomb =10;
+    file = fopen("9.txt",w+);
+    if(file == NULL){
+      printf("erreur");
+      exit(1);
+    }
   }
   if(choice == 2){
     size = 16;
     bomb =40;
+    file = fopen("16.txt",w+);
+    if(file == NULL){
+      printf("erreur");
+      exit(1);
+    }
   }
   if(choice == 3){
     size = askSize();
@@ -246,6 +279,7 @@ int main(){
   addBomb(board, size, bomb); //add Bomb to the board
   checkBomb(board, size); //add the numbers of bombs around
   printBoard(size, board);
+  timer = getTimeSec();
   while(end==0){
     printf("1. Révélé une case\n2. Placer/enlever un marqueur \n");
     while(doReveal < 1 || doReveal > 2){
@@ -268,7 +302,10 @@ int main(){
     printf("Vous avez perdu %s\n", username);
   }
   else{
-    printf("Bravo vous avez gagné");
+    timer = getTimeSec() - timer;
+    printf("Bravo vous avez gagné %s\n", username);
+    printf("%d s", timer);
+    updateScoreboard(file, timer, username); 
   }
 	return 0;
 }
