@@ -1,15 +1,15 @@
-#include game.h
+#include "game.h"
 
 int main(){
   FILE* file;
   int size, bomb, end, s, m, ms;
-  char filename[100]= "9.txt";
   int timer;
   int choice = 0;
   char username[100]={};
   end = 0;
   int i =0;
   int j =0;
+  int k =0;
   int doReveal = -1;
   srand(time(NULL));
   printf("Ecriver votre pseudo \n");
@@ -72,12 +72,16 @@ int main(){
     timer = getTimeSec() - timer;
     printf("Bravo vous avez gagné %s\n", username);
     printf("Votre temps est de %d m et %d s\n",timer/60, timer%60);
-    sleep(3);
-    if(file != NULL && choice != 3){
-      updateScoreboard(file, timer, username, filename); 
+    if(file != NULL && choice == 1){
+      sleep(3);
+      updateScoreboard(file, timer, username, "9.txt"); 
     }
-    if(choice == 3){
-      printf("il n'y a pas de scoreboard pour les valeurs custom");
+    else if(file != NULL && choice == 2){
+      sleep(3);
+      updateScoreboard(file, timer, username, "16.txt"); 
+    }
+    else if(choice == 3){
+      printf("il n'y a pas de scoreboard pour les valeurs custom\n");
     }
   }
 	return 0;

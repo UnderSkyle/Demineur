@@ -1,4 +1,4 @@
-#include game.h
+#include "game.h"
 
 
 void updateScoreboard(FILE* file, int timer, char username[], char filename[]){
@@ -52,7 +52,7 @@ void placeFlag(int** board, int size, int i, int j){ // used to place flags on t
 }
 
 void reveal(int** board, int size, int i, int j){ // reveal a space with recursion
-  if(i < 0 || i >size-1 || j<0 || j>size-1){
+  if(i < 0 || i >size-1 || j<0 || j>size-1 || board[i][j] < -100){
   }
   else if(board[i][j] > 0){
   }
